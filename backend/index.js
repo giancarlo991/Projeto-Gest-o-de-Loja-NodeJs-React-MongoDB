@@ -9,19 +9,18 @@ app.use(cors());
 
 mongoose.connect('mongodb://127.0.0.1:27017/projeto_escolar')
 
-.then(() => console.log(">>> MONGODB CONECTADO COM SUCESSO <<<")) // Mudei a msg para destacar
+.then(() => console.log(">>> MONGODB CONECTADO COM SUCESSO <<<")) 
 .catch(err => console.error("ERRO AO CONECTAR NO MONGO:", err));
 
-// 2. Definição dos Models (Collections e Relacionamento)
 
-// Collection 1: Categoria
+
+
 const CategoriaSchema = new mongoose.Schema({
     nome: { type: String, required: true },
     descricao: String
 });
 const Categoria = mongoose.model('Categoria', CategoriaSchema);
 
-// Collection 2: Produto (Relacionado com Categoria)
 const ProdutoSchema = new mongoose.Schema({
     nome: { type: String, required: true },
     preco: { type: Number, required: true },
@@ -29,14 +28,14 @@ const ProdutoSchema = new mongoose.Schema({
 });
 const Produto = mongoose.model('Produto', ProdutoSchema);
 
-// 3. Rotas da API
+
 app.post('/categorias', async (req, res) => {
     try {
-        console.log("Dados recebidos:", req.body); // Isso vai mostrar o que chegou
+        console.log("Dados recebidos:", req.body);
         const categoria = await Categoria.create(req.body);
         res.json(categoria);
     } catch (error) {
-        console.error("ERRO AO SALVAR:", error); // Isso mostra o erro no terminal
+        console.error("ERRO AO SALVAR:", error); 
         res.status(500).json({ error: error.message });
     }
 });
@@ -46,7 +45,7 @@ app.get('/categorias', async (req, res) => {
     res.json(categorias);
 });
 
-// --- Rotas de Produtos ---
+
 app.post('/produtos', async (req, res) => {
     try {
         const produto = await Produto.create(req.body);
@@ -57,7 +56,6 @@ app.post('/produtos', async (req, res) => {
 });
 
 app.get('/produtos', async (req, res) => {
-    // .populate() preenche os dados da categoria em vez de mostrar só o ID
     const produtos = await Produto.find().populate('categoria');
     res.json(produtos);
 });
@@ -72,5 +70,5 @@ app.delete('/produtos/:id', async (req, res) => {
     res.json({ message: 'Produto deletado' });
 });
 
-// Iniciar Servidor
+
 app.listen(3001, () => console.log('Servidor rodando na porta 3001'));
